@@ -3,7 +3,7 @@ import aws_cdk as cdk
 from api.infrastructure import APIStack
 from recognition.infrastructure import RekognitionStack
 
-DEFAULT_REGION = 'us-west-2'
+DEFAULT_REGION = 'sa-east-1'
 
 app = cdk.App()
 apiStack = APIStack(app, "APIStack", env=cdk.Environment(region=DEFAULT_REGION))
