@@ -9,13 +9,13 @@ dynamodb = boto3.client("dynamodb")
 queue_url = os.environ["SQS_QUEUE_URL"]
 table_name = os.environ["TABLE_NAME"]
 
-# 1.) Detect labels from image with Rekognition
+# 1.)
 
-# 2.) Save labels to DynamoDB
 
-# 3.) Delete message from SQS
+# 2.)
 
-# <<Amazon CodeWhisperer generated code goes here>>
+
+# 3.)
 
 
 def handler(event, context):
@@ -29,7 +29,9 @@ def handler(event, context):
                 bucket_name = record.get("s3").get("bucket").get("name")
                 key = record.get("s3").get("object").get("key")
 
-                # call method 1.) to generate image label and store as var "labels"
+                #
+
+
 
                 # code snippet to create dynamodb item from labels
                 db_result = []
@@ -42,9 +44,11 @@ def handler(event, context):
                     "labels": {"S": str(db_result)}
                 }
 
-                # call method 2.) to store "db_item" result on DynamoDB
+                #
 
-                # call method 3.) to delete img from SQS
+
+                #
+
 
     except Exception as e:
         print(e)
