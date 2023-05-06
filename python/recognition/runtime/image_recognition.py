@@ -10,12 +10,32 @@ queue_url = os.environ["SQS_QUEUE_URL"]
 table_name = os.environ["TABLE_NAME"]
 
 # 1.) Detect labels from image with Rekognition
+def detect_labels(bucket_name, key):
+    response = rekognition.detect_labels(
+        Image={
+            "S3Object": {
+                "Bucket": bucket_name,
+                "Name": key
+            }
+        },
+        MaxLabels=10,
+        MinConfidence=85
+    )
+    return response
 
 # 2.) Save labels to DynamoDB
+def save_labels_to_db(labels):
+    response = dynamodb.put_item(
+        TableName=table_name,
+        Item=labels
+    )
 
 # 3.) Delete message from SQS
-
-# <<Amazon CodeWhisperer generated code goes here>>
+def delete_message_from_sqs(receipt_handle):
+    sqs.delete_message(
+        QueueUrl=queue_url,
+        ReceiptHandle=receipt_handle
+    )
 
 
 def handler(event, context):
@@ -29,7 +49,8 @@ def handler(event, context):
                 bucket_name = record.get("s3").get("bucket").get("name")
                 key = record.get("s3").get("object").get("key")
 
-                # call method 1.) to generate image label and store as var "labels"
+                # Call function #1 to generate image labels
+                labels = detect_labels(bucket_name, key)
 
                 # code snippet to create dynamodb item from labels
                 db_result = []
@@ -42,9 +63,11 @@ def handler(event, context):
                     "labels": {"S": str(db_result)}
                 }
 
-                # call method 2.) to store "db_item" result on DynamoDB
+                # Call function #2 to save labels to DynamoDB
+                save_labels_to_db(db_item)
 
-                # call method 3.) to delete img from SQS
+                # Call function #3 to delete message from SQS
+                delete_message_from_sqs(receipt_handle)
 
     except Exception as e:
         print(e)
