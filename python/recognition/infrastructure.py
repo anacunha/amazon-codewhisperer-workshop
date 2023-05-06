@@ -1,5 +1,4 @@
 # declare SQS that reacts to image upload SNS
-# declare SNS to where it sends the items
 
 from aws_cdk import (
     aws_iam as iam,
@@ -12,7 +11,7 @@ from constructs import Construct
 
 
 class RekognitionStack(Stack):
-    def __init__(self, scope: Construct, id: str, sqs_url: str, sqs_arn: str, sns_arn: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, sqs_url: str, sqs_arn: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # create new IAM group and user
@@ -39,7 +38,6 @@ class RekognitionStack(Stack):
             environment={
                 "TABLE_NAME": table.table_name,
                 "SQS_QUEUE_URL": sqs_url,
-                "TOPIC_ARN": sns_arn,
             },
         )
 
@@ -50,12 +48,6 @@ class RekognitionStack(Stack):
         rekognition_statement.add_actions("rekognition:DetectLabels")
         rekognition_statement.add_resources("*")
         lambda_function.add_to_role_policy(rekognition_statement)
-
-        # add SNS permissions for Lambda function
-        sns_permission = iam.PolicyStatement()
-        sns_permission.add_actions("sns:publish")
-        sns_permission.add_resources("*")
-        lambda_function.add_to_role_policy(sns_permission)
 
         # grant permission for lambda to receive/delete message from SQS
         sqs_permission = iam.PolicyStatement()

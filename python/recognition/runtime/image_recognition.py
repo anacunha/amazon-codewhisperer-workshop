@@ -5,19 +5,15 @@ import json
 sqs = boto3.client("sqs")
 rekognition = boto3.client("rekognition")
 dynamodb = boto3.client("dynamodb")
-sns = boto3.client("sns")
 
 queue_url = os.environ["SQS_QUEUE_URL"]
 table_name = os.environ["TABLE_NAME"]
-topic_arn = os.environ["TOPIC_ARN"]
 
 # 1.) Detect labels from image with Rekognition
 
 # 2.) Save labels to DynamoDB
 
-# 3.) Publish item to SNS
-
-# 4.) Delete message from SQS
+# 3.) Delete message from SQS
 
 # <<Amazon CodeWhisperer generated code goes here>>
 
@@ -47,10 +43,8 @@ def handler(event, context):
                 }
 
                 # call method 2.) to store "db_item" result on DynamoDB
-                
-                # call method 3.) to send message to SNS
 
-                # call method 4.) to delete img from SQS
+                # call method 3.) to delete img from SQS
 
     except Exception as e:
         print(e)
